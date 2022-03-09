@@ -4,12 +4,13 @@ GIT_REPO=$(cat git_repo)
 GIT_TOKEN=$(cat git_token)
 
 export KUBECONFIG=$(cat .kubeconfig)
-NAMESPACE=$(cat .namespace)
-COMPONENT_NAME=$(jq -r '.name // "my-module"' gitops-output.json)
-BRANCH=$(jq -r '.branch // "main"' gitops-output.json)
-SERVER_NAME=$(jq -r '.server_name // "default"' gitops-output.json)
-LAYER=$(jq -r '.layer_dir // "2-services"' gitops-output.json)
-TYPE=$(jq -r '.type // "base"' gitops-output.json)
+NAMESPACE="openshift-operators"
+BRANCH="main"
+SERVER_NAME="default"
+TYPE="base"
+LAYER="2-services"
+
+COMPONENT_NAME="aspera-hsts-operator"
 
 mkdir -p .testrepo
 
@@ -50,21 +51,36 @@ else
   sleep 30
 fi
 
-DEPLOYMENT="${COMPONENT_NAME}-${BRANCH}"
+SUBSCRIPTION="subscription/${COMPONENT_NAME}"
 count=0
-until kubectl get deployment "${DEPLOYMENT}" -n "${NAMESPACE}" || [[ $count -eq 20 ]]; do
-  echo "Waiting for deployment/${DEPLOYMENT} in ${NAMESPACE}"
+until kubectl get "${SUBSCRIPTION}" -n "${NAMESPACE}" || [[ $count -eq 20 ]]; do
+  echo "Waiting for ${SUBSCRIPTION} in ${NAMESPACE}"
   count=$((count + 1))
   sleep 15
 done
 
 if [[ $count -eq 20 ]]; then
-  echo "Timed out waiting for deployment/${DEPLOYMENT} in ${NAMESPACE}"
-  kubectl get all -n "${NAMESPACE}"
+  echo "Timed out waiting for ${SUBSCRIPTION} in ${NAMESPACE}"
+  kubectl get subscription -n "${NAMESPACE}"
   exit 1
 fi
 
-kubectl rollout status "deployment/${DEPLOYMENT}" -n "${NAMESPACE}" || exit 1
+CSV="ibm-aspera-hsts-operator"
+count=0
+until [[ $(kubectl get csv -n "${NAMESPACE}" -l operators.coreos.com/${CSV}.${NAMESPACE}="" -o=jsonpath='{range .items[]}{.metadata.name}{"\n"}{end}' | wc -l) -gt 0 ]] || [[ $count -eq 20 ]]; do
+  echo "Waiting for csv ${CSV} in ${NAMESPACE}"
+  count=$((count + 1))
+  sleep 15
+done
+
+if [[ $count -eq 20 ]]; then
+  echo "Timed out waiting for ${CSV} in ${NAMESPACE}"
+  kubectl get csv -n "${NAMESPACE}"
+  exit 1
+fi
+
+echo "Found CSV"
+kubectl get csv -n "${NAMESPACE}" -l operators.coreos.com/${CSV}.${NAMESPACE}="" -o=jsonpath='{range .items[]}{.metadata.name}{"\n"}{end}'
 
 cd ..
 rm -rf .testrepo
