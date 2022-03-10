@@ -80,8 +80,7 @@ if [[ $count -eq 20 ]]; then
   exit 1
 fi
 
-echo "Found CSV"
-kubectl get csv -n "${NAMESPACE}" -l operators.coreos.com/${CSV}.${NAMESPACE}="" -o=jsonpath='{range .items[]}{.metadata.name}{"\n"}{end}'
+echo "Found csv ${CSV} in ${NAMESPACE}"
 
 cd ..
 rm -rf .testrepo
