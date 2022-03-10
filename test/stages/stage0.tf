@@ -2,7 +2,7 @@ terraform {
 }
 module "setup_clis" {
   source = "github.com/cloud-native-toolkit/terraform-util-clis.git"
-  clis   = ["yq", "jq"]
+  clis   = ["jq"]
   # clis   = [“helm”, “rosa”]
 }
 resource "null_resource" "setup_clis" {
