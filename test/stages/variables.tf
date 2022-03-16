@@ -1,5 +1,5 @@
 
-variable cluster_username { 
+variable cluster_username {
   type        = string
   description = "The username for AWS access"
 }
@@ -10,11 +10,11 @@ variable "cluster_password" {
 }
 
 variable "server_url" {
-  type        = string
+  type = string
 }
 
 variable "bootstrap_prefix" {
-  type = string
+  type    = string
   default = ""
 }
 
@@ -32,6 +32,7 @@ variable "cluster_name" {
 variable "cluster_type" {
   type        = string
   description = "The type of cluster that should be created (openshift or kubernetes)"
+  default     = "openshift"
 }
 
 variable "cluster_exists" {
@@ -46,8 +47,8 @@ variable "git_token" {
 }
 
 variable "git_host" {
-  type        = string
-  default     = "github.com"
+  type    = string
+  default = "github.com"
 }
 
 variable "git_type" {
