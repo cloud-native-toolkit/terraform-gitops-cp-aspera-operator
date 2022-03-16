@@ -20,7 +20,7 @@ jobs:
         testcase:
           #comment-out or remove either of the platforms you do not need.  ocp4_latest is IBM Cloud
           - ocp4_latest_gitops
-          - aws_latest_gitops
+          #- aws_latest_gitops
       max-parallel: 1
       fail-fast: false
 
@@ -43,7 +43,7 @@ jobs:
           ENVIRONMENT: ${{ matrix.testcase }}
         shell: bash
         run: |
-          repo=$(echo ${GITHUB_REPOSITORY} | sed -E "s~.*/[^-]+-(.*)~\1-${{matrix.testcase}}~g" | sed 's/_latest_gitops//g')          
+          repo=$(echo ${GITHUB_REPOSITORY} | sed -E "s~.*/[^-]+-(.*)~\1-${{matrix.testcase}}~g" | sed 's/_latest_gitops//g')
           echo "Repo: $repo"
           echo "::set-output name=repo::$repo"
 
