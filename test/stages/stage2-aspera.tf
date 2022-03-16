@@ -7,6 +7,6 @@ module "gitops_module" {
   namespace       = module.gitops_namespace.name
   kubeseal_cert   = module.gitops.sealed_secrets_cert
   catalog         = module.cp_catalogs.catalog_ibmoperators
-  #  channel         = module.cp4i-dependencies.eventstreams.channel
-  channel = "v1.4"
+  channel         = module.cp4i-dependencies.aspera.channel
+  #channel = "v1.4"
 }

@@ -2,15 +2,16 @@
 
 GIT_REPO=$(cat git_repo)
 GIT_TOKEN=$(cat git_token)
+BIN_DIR=$(cat .bin_dir)
+cat .bin_dir
 
 export KUBECONFIG=$(cat .kubeconfig)
-NAMESPACE="openshift-operators"
-BRANCH="main"
-SERVER_NAME="default"
-TYPE="base"
-LAYER="2-services"
-
-COMPONENT_NAME="aspera-hsts-operator"
+NAMESPACE=$(cat .namespace)
+COMPONENT_NAME="$(jq -r '.name // "my-module"' gitops-output.json)"
+BRANCH=$(jq -r '.branch // "main"' gitops-output.json)
+SERVER_NAME=$(jq -r '.server_name // "default"' gitops-output.json)
+LAYER=$(jq -r '.layer_dir // "2-services"' gitops-output.json)
+TYPE=$(jq -r '.type // "base"' gitops-output.json)
 
 mkdir -p .testrepo
 
@@ -67,7 +68,7 @@ fi
 
 CSV="ibm-aspera-hsts-operator"
 count=0
-until [[ $(kubectl get csv -n "${NAMESPACE}" -l operators.coreos.com/${CSV}.${NAMESPACE}="" -o=jsonpath='{range .items[]}{.metadata.name}{"\n"}{end}' | wc -l) -gt 0 ]] || [[ $count -eq 20 ]]; do
+until kubectl get csv -n "${NAMESPACE}" -o json | "${BIN_DIR}/jq" -r '.items[] | .metadata.name' | grep -q "${CSV}" || [[ $count -eq 20 ]]; do
   echo "Waiting for csv ${CSV} in ${NAMESPACE}"
   count=$((count + 1))
   sleep 15
@@ -79,8 +80,7 @@ if [[ $count -eq 20 ]]; then
   exit 1
 fi
 
-echo "Found CSV"
-kubectl get csv -n "${NAMESPACE}" -l operators.coreos.com/${CSV}.${NAMESPACE}="" -o=jsonpath='{range .items[]}{.metadata.name}{"\n"}{end}'
+echo "Found csv ${CSV} in ${NAMESPACE}"
 
 cd ..
 rm -rf .testrepo
