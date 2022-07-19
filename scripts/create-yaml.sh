@@ -6,7 +6,7 @@ CHART_DIR=$(cd "${MODULE_DIR}/charts/ibm-aspera-operator"; pwd -P)
 
 NAME="$1"
 DEST_DIR="$2"
-VALUES_FILE="$3"
+VALUES_FILE="values.yaml"
 
 mkdir -p "${DEST_DIR}"
 
