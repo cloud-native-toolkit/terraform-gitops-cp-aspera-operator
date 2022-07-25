@@ -9,17 +9,15 @@ locals {
   namespace          = var.namespace
   layer_config       = var.gitops_config[local.layer]
   values_content = {
-    "ibm-aspera-operator" = {
-      subscriptions = {
-        ibmaspera = {
-          name = local.name
-          subscription = {
-            channel             = var.channel
-            installPlanApproval = "Automatic"
-            name                = "aspera-hsts-operator"
-            source              = var.catalog
-            sourceNamespace     = var.catalog_namespace
-          }
+    subscriptions = {
+      ibmaspera = {
+        name = local.name
+        subscription = {
+          channel             = var.channel
+          installPlanApproval = "Automatic"
+          name                = "aspera-hsts-operator"
+          source              = var.catalog
+          sourceNamespace     = var.catalog_namespace
         }
       }
     }
