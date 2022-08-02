@@ -6,7 +6,7 @@ BIN_DIR=$(cat .bin_dir)
 cat .bin_dir
 
 export KUBECONFIG=$(cat .kubeconfig)
-NAMESPACE=$(cat .namespace)
+NAMESPACE="openshift-operators"
 COMPONENT_NAME="$(jq -r '.name // "my-module"' gitops-output.json)"
 BRANCH=$(jq -r '.branch // "main"' gitops-output.json)
 SERVER_NAME=$(jq -r '.server_name // "default"' gitops-output.json)

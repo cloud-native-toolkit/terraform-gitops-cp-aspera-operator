@@ -11,12 +11,6 @@ output "branch" {
   depends_on  = [null_resource.setup_gitops]
 }
 
-output "namespace" {
-  description = "The namespace where the module will be deployed"
-  value       = local.namespace
-  depends_on  = [null_resource.setup_gitops]
-}
-
 output "server_name" {
   description = "The server where the module will be deployed"
   value       = var.server_name

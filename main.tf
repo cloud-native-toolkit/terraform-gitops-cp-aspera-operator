@@ -1,12 +1,10 @@
 locals {
-  name               = "ibm-aspera"
+  name               = "ibm-aspera-operator"
   bin_dir            = module.setup_clis.bin_dir
   yaml_dir           = "${path.cwd}/.tmp/${local.name}/chart/${local.name}"
-  service_url        = "http://${local.name}.${var.namespace}"
   layer              = "services"
   type               = "base"
   application_branch = "main"
-  namespace          = var.namespace
   layer_config       = var.gitops_config[local.layer]
   values_content = {
     subscriptions = {
