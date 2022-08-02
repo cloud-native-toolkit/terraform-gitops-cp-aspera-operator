@@ -1,5 +1,5 @@
 locals {
-  name               = "ibm-aspera"
+  name               = "ibm-aspera-operator"
   bin_dir            = module.setup_clis.bin_dir
   yaml_dir           = "${path.cwd}/.tmp/${local.name}/chart/${local.name}"
   layer              = "services"
